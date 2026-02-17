@@ -1,0 +1,179 @@
+header{
+    background-color: blueviolet;
+    height: 50px;
+    flex-shrink: 0;
+}
+.logotype{
+    display:flex;
+    flex-direction: row;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+img{
+    width:40px;
+    height:40px;
+    margin-top: 6px;
+    margin-left: 5px;
+}
+
+.logo{
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+.workspace {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.workspace > section {
+    height: 100%;
+    min-height: 0; /* чтобы overflow работал */
+}
+
+.workspace__code-editor{
+    flex: 7.5 0 0;
+    position: relative;
+    overflow: hidden;
+}
+.workspace__block-palette{
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.workspace__consol{
+    flex-grow: 5.5
+} 
+.container{
+    border: 2px solid black;
+    
+    /* margin-top: 7vh; */
+}
+
+.block{
+    background-color: rgba(21, 75, 221, 0.744);
+    height: 6vh;
+    width: fit-content;
+    border: 2px solid black;
+    margin: 20px 0px 0px 5px;
+    cursor: grab;
+    padding: 0.8em 0.8em; 
+    user-select: none;
+}
+.workspace__operation{
+    pointer-events: none;
+}
+
+/* категории в левой правой панели */
+.workspace__category-1{
+    margin: 20px 0px 0px 10px;
+}
+
+.category{
+    font-size: 2em;
+    font-weight: bold;
+    opacity:0.7;
+    margin: 25px 0px 0px 10px;
+    user-select: none;
+}
+
+.code-block { /* Класс который присваиваем клону блока */
+    position: absolute;
+    background-color: rgba(21, 75, 221, 0.85);
+    border: 2px solid black;
+    padding: 0.8em;
+    cursor: grab;
+    user-select: none;
+}
+/* категории в самой левой панели */
+.workspace__categories {
+    flex-grow: 0.3;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* центрируем кружки и текст */
+    border-right: 2px solid black;
+    overflow-y: auto;
+    padding: 10px 0;
+    gap: 15px; /* расстояние между категориями */
+}
+.workspace__tabs a {
+    display: flex;
+    flex-direction: column; /* кружок сверху, текст снизу */
+    align-items: center;    /* по центру */
+    text-decoration: none;
+    color: black;
+    gap: 5px; /* расстояние между кружком и текстом */
+    background-color: #00000022;
+    border-radius: 1em;
+    padding: 0.2em;
+}
+
+.workspace__tabs .icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid black;
+}
+
+/* Текст под кружком */
+.workspace__tabs .tab {
+    font-size: 0.85em;
+    text-align: center;
+    user-select: none;
+}
+.workspace__tabs{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+.tab{
+    text-align: center;
+}
+.workspace__icon-literals { background-color: #8a2be2; }
+.workspace__icon-arrays { background-color: #32cd32; }
+.workspace__icon-control { background-color: #ff4500; }
+.workspace__icon-math { background-color: #1e90ff; }
+.workspace__icon-logic { background-color: #ff1493; }
+.workspace__icon-math-advanced { background-color: #00bfff; }
+.workspace__icon-strings { background-color: #ff69b4; }
+.workspace__icon-conversions { background-color: #ffa500; }
+
+.with-branch {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    padding: 10px;
+    width: fit-content;
+    height: fit-content;
+}
+.workspace__branch{
+    min-width: 35px;
+    min-height: 25px;
+    background-color: white;
+    border: 2px solid #444;
+    /* display: flex;
+    align-items: center;
+    justify-content: center; */
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+}
+
+.workspace__branch.highlight {
+    outline: 2px dashed orange;
+}
+
+.workspace__input-number{
+    width: 3em; 
+}
