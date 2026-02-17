@@ -59,17 +59,29 @@
         <section class="workspace__block-palette container">
             
             <div class="workspace__category-1 category" id="literals">Literals & Variables</div>
-            <div class="workspace__numberLiteral-block block">
+            <div class="workspace__numberLiteral-block block with-branch">
+                <div class="workspace__operation">Число</div>
                 <input type="number" class = "workspace__input-number">
             </div>
-            <div class="workspace__stringLiteral-block block">Строка</div>
-            <div class="workspace__boolLiteral-block block">Булево</div>
-            <div class="workspace__variable-block block">Переменная</div>
+
+            <div class="workspace__stringLiteral-block block with-branch">
+                <div class="workspace__operation">Строка</div>
+                <input type="text" class = "workspace__input-number">
+            </div>
+            <div class="workspace__stringLiteral-block block with-branch">
+                <div class="workspace__operation">Булево</div>
+                <input type="checkbox" class = "workspace__input-number">
+            </div>
+            <div class="workspace__variable-block block with-branch">
+                <div class = workspace__operation>Переменная</div> 
+                <input type="text" class = "workspace__input-number">
+            </div>
+
             <div class="workspace__assign-block block with-branch">
                 <div class = "workspace__branch" data-branch></div> 
                 <div class = workspace__operation>=</div> 
                 <div class = "workspace__branch" data-branch></div> 
-                </div>
+            </div>
 
             <div class="workspace__category-2 category" id="arrays">Arrays</div>
             <div class="workspace__array-block block">Создать список</div>
