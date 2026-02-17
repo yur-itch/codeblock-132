@@ -2,7 +2,6 @@ import { ASTNode, Interpreter } from "./index.mjs"
 
 class UINode {
     constructor(type, element, value = null) {
-
         this.element = element;
         this.node = new ASTNode(type, value);
         this.parent = null;
@@ -19,7 +18,10 @@ class UINode {
         this.parent = parent;
         parent.appendChild(this.element);
         this.children = [];
+    }
 
+    remove() {
+        this.element.remove();
     }
 }
 

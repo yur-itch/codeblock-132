@@ -64,9 +64,9 @@ img{
     height: 6vh;
     width: fit-content;
     border: 2px solid black;
-    margin: 20px 0px 0px 5px;
+    margin: 0;
     cursor: grab;
-    padding: 0.8em 0.8em; 
+    padding: 0.1em 0.1em; 
     user-select: none;
 }
 .workspace__operation{
@@ -86,7 +86,7 @@ img{
     user-select: none;
 }
 
-.code-block { /* Класс который присваиваем клону блока */
+editor > .block { /* Класс который присваиваем клону блока */
     position: absolute;
     background-color: rgba(21, 75, 221, 0.85);
     border: 2px solid black;

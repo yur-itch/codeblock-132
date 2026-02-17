@@ -7,6 +7,7 @@ class Var {
 
 class ASTNode {
     constructor(token, value = null, children = []) {
+        this.id = crypto.randomUUID();
         this.token = token;
         this.value = value;
         this.children = children;
