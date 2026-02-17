@@ -1,5 +1,7 @@
+import { UINodeManager } from "./UINodeManager.mjs";
 // делаем клон наших блоков
 // const clone = block.cloneNode(true);
+const manager = new UINodeManager();
 
 // clone.classList.add("code-block");
 // clone.classList.remove("block");
@@ -15,37 +17,31 @@ let offsetY = 0;
 // pointerdown - сообщает, что произошло нажатие
 // e — объект события (координаты мыши, target, тип события и т.д.)
 // e.target - элемент, по которому нажали
-palette.addEventListener('pointerdown', (e) => {
-    // Если нажимаем даже не на блок, мы не начинаем перетаскивание
-    if(!e.target.classList.contains("block")) return;
-    
-    // создаём клон
-    const clone = e.target.cloneNode(true);
-    clone.classList.remove("block");     // убираем класс палитры
-    clone.classList.add("code-block");   // новый класс для editor
+const numberBlock = palette.querySelector(".workspace__numberLiteral-block")
+const stringBlock = palette.querySelector(".workspace__stringLiteral-block")
+numberBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("numberLiteral", "Число")
+    startDragging(uiNode, e);
+});
+stringBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("stringLiteral", "Строка")
+    startDragging(uiNode, e);
+});
 
-    //editor.appendChild(clone); // клона в эдитор
-    document.body.append(clone);
-    draggingBlock = clone // запоминаем, что этот блок сейчас перетаскиваем
-
-    const rect = e.target.getBoundingClientRect(); // определяем координаты оригинал блока, который берем
-
-     // высчитываем координаты для клона
-     //offsetX, offsetY - расстояние от левого верхнего угла блока до места клика
-     //e.clientX, e.clientY - позиция курсора относительно окна браузера
+function startDragging(uiNode, e) {
+    editor.parentElement.append(uiNode.element);
+    draggingBlock = uiNode.element;
+    const rect = e.target.getBoundingClientRect();
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
-
-    // привязываем позицию клона к body благодаря absolute
-    // высчитываем его координаты
-    clone.style.position = 'absolute';
-    clone.style.left = (e.clientX - offsetX) + 'px';
-    clone.style.top  = (e.clientY - offsetY) + 'px';
-});
+    uiNode.element.style.position = "absolute"
+    uiNode.element.style.top  = (e.clientY - offsetY) + 'px';
+    uiNode.element.style.left = (e.clientX - offsetX) + 'px';
+}
 
 editor.addEventListener('pointerdown', (e) => { 
     /* если кликнули: по блоку → вернёт блок по ветке / пустоте → null */ 
-    const block = e.target.closest(".code-block");
+    const block = e.target.closest(".block");
     console.log(e.target, block)
     if (!block) return;
     /* чтобы клик не дошёл до palette 
