@@ -1,23 +1,42 @@
 import { ASTNode, Interpreter } from "./index.mjs"
 
 class UINode {
-    constructor(type, element, value = null) {
+    constructor(type, element, value = null, branches = null) {
         this.element = element;
         this.node = new ASTNode(type, value);
         this.parent = null;
+        this.branches = branches;
     }
 
-    appendChild(childUINode) {
-        this.node.children.push(childUINode.node);
-        const contrainer = this.element.querySelector(".workspace__branch");
-        contrainer.appendChild(this.element);
-    }
-
-    setParent(parent)
+    setBranches(branches)
     {
+        this.branches = branches;
+    }
+
+    appendChild(childUINode, branch) {
+        const index = this.branches.indexOf(branch);
+        console.log(index);
+        branch.appendChild(childUINode.element);
+        this.node.children.push(childUINode.node);
+    }
+
+    removeChild(childUINOde) {
+        const index = this.node.children.indexOf(childUINOde.node);
+        if (index !== -1) {
+            this.node.children.splice(index, 1);
+        }
+    }
+
+    attachTo(parent) {
+        this.element.style.position = 'static';
         this.parent = parent;
-        parent.appendChild(this.element);
-        this.children = [];
+    }
+
+    detach() {
+        this.element.style.position = 'absolute';
+        if (this.parent) {
+            this.parent.removeChild(this);
+        }
     }
 
     remove() {

@@ -40,16 +40,30 @@ class UINodeManager {
                 input.value = value;
                 break;
             }
+            case "variable": {
+                element.appendChild(text);
+                const input = document.createElement("input");
+                input.type = "text";
+                input.className = "workspace__input-number"
+                element.appendChild(input);
+                input.value = value;
+                input.addEventListener("change", (e) => {
+                    uiNode.node.value = e.target.value;
+                    console.log(uiNode.node);
+                })
+                break;
+            }
             case "assign": {
                 const left = document.createElement("div");
                 left.classList.add("workspace__branch");
     
                 const right = document.createElement("div");
                 right.classList.add("workspace__branch");
-    
+
                 element.appendChild(left);
                 element.appendChild(text);
                 element.appendChild(right);
+                uiNode.setBranches([left, right]);
                 break;
             }
         }
@@ -58,19 +72,26 @@ class UINodeManager {
         return uiNode;
     }
 
-    attach(parent, current) {
-        parent.appendChild(current)
+    attach(uiNode, parent, branchElement) {
+        parent.appendChild(uiNode, branchElement);
+        uiNode.attachTo(parent);
+        return uiNode;
     }
 
-    createElement(type, label, value = null) {
+    detach(uiNode) {
+        uiNode.detach();
+        return uiNode;
+    }
+
+    getNode(id) {
+        return this.activeBlocks.get(id)
+    }
+    
+    removeNode(uiNode)
+    {
+        this.activeBlocks.delete(uiNode.node.id)
+        uiNode.remove();
     }
 }
-
-
-// document.getElementById('palette-set').addEventListener('mousedown', (e) => {
-//     const newBlock = manager.spawnBlock('set', e.clientX, e.clientY);
-    
-//     startDragging(newBlock, e);
-// });
 
 export {UINodeManager}

@@ -19,13 +19,19 @@ let offsetY = 0;
 // e.target - элемент, по которому нажали
 const numberBlock = palette.querySelector(".workspace__numberLiteral-block")
 const stringBlock = palette.querySelector(".workspace__stringLiteral-block")
+const variableBlock = palette.querySelector(".workspace__variable-block")
 const assignBlock = palette.querySelector(".workspace__assign-block")
+
 numberBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("numberLiteral", "Число")
     startDragging(uiNode, e);
 });
 stringBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("stringLiteral", "Строка")
+    startDragging(uiNode, e);
+});
+variableBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("variable", "Переменная")
     startDragging(uiNode, e);
 });
 assignBlock.addEventListener('pointerdown', (e) => {
@@ -40,7 +46,7 @@ function startDragging(uiNode, e) {
     const rect = block.getBoundingClientRect();
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
-    uiNode.element.style.position = "absolute"
+    uiNode.element.style.position = "absolute";
     uiNode.element.style.top  = (e.clientY - offsetY) + 'px';
     uiNode.element.style.left = (e.clientX - offsetX) + 'px';
 }
@@ -48,31 +54,29 @@ function startDragging(uiNode, e) {
 editor.addEventListener('pointerdown', (e) => { 
     /* если кликнули: по блоку → вернёт блок по ветке / пустоте → null */ 
     const block = e.target.closest(".block");
-    //console.log(e.target, block)
+
     if (!block) return;
     /* чтобы клик не дошёл до palette 
     document иначе могут начаться глюки */
     e.stopPropagation();
-
-    draggingBlock = manager.activeBlocks.get(block.id);
-    console.log(block.id)
-    console.log(draggingBlock)
 
     const rect = block.getBoundingClientRect();
 
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
 
-    document.body.appendChild(block);
+    editor.parentElement.appendChild(block);
 
-    block.style.position = 'absolute';
+    draggingBlock = manager.getNode(block.id);
+    manager.detach(draggingBlock);
+
     block.style.left = (e.clientX - offsetX) + 'px';
     block.style.top  = (e.clientY - offsetY) + 'px';
 
 });
 
 document.addEventListener('pointermove', (e) => {
-    if (!draggingBlock) return; // если не тянем — ничего не делаем
+    if (!draggingBlock) return;
 
     // просто обновляем его позицию при движении мыши
     draggingBlock.element.style.left = (e.clientX - offsetX) + 'px';
@@ -114,8 +118,8 @@ getBranchUnderCursor(x, y):
 document.addEventListener('pointerup', (e) => {
     if (!draggingBlock) return;
 
-    const branch = getBranchUnderCursor(e.clientX, e.clientY);
-
+    const branchElement = getBranchUnderCursor(e.clientX, e.clientY);
+    
     const editorRect = editor.getBoundingClientRect(); // координаты editor
     // проверка на то, находится ли блок в зоне editor
     const isInsideEditor =
@@ -124,14 +128,11 @@ document.addEventListener('pointerup', (e) => {
         e.clientY >= editorRect.top &&
         e.clientY <= editorRect.bottom;
     
-    // если находится, то добавляем его в editor
     if (!isInsideEditor) {
-        // иначе - удаляем
-
-        draggingBlock.remove();
-    } else if (branch){
-        branch.appendChild(draggingBlock.element);
-        draggingBlock.element.style.position = 'static';
+        manager.removeNode(draggingBlock)
+    } else if (branchElement){
+        const nodeBranchParent = manager.getNode(branchElement.parentElement.id);
+        manager.attach(draggingBlock, nodeBranchParent, branchElement)
     } else{
         // пересчитываем координаты под editor
         const x = e.clientX - editorRect.left - offsetX;
@@ -139,6 +140,7 @@ document.addEventListener('pointerup', (e) => {
 
         // СНАЧАЛА мы кладём блок в editor
         editor.appendChild(draggingBlock.element);
+        
         // ПОТОМ задаём left/top, потому что система координат меняется
         // (раньше система координат нашего блока зависела от body, щас от editor)
         draggingBlock.element.style.left = x + 'px';
@@ -168,7 +170,7 @@ offsetX/Y обеспечивают правильное позициониров
 
 // кладем блоки в ветку:
 
-function getBranchUnderCursor(x,y){
+function getBranchUnderCursor(x,y) {
     const branches = document.querySelectorAll(".workspace__branch");
     
     const maxLayerBranch = [...branches].filter(b => {
