@@ -1,12 +1,14 @@
-header{
+header {
     background-color: blueviolet;
     height: 50px;
     flex-shrink: 0;
 }
-.logotype{
+
+.logotype {
     display:flex;
     flex-direction: row;
 }
+
 body {
     display: flex;
     flex-direction: column;
@@ -18,14 +20,14 @@ html, body {
     margin: 0;
 }
 
-img{
+img {
     width:40px;
     height:40px;
     margin-top: 6px;
     margin-left: 5px;
 }
 
-.logo{
+.logo {
     margin-top: 20px;
     margin-left: 5px;
 }
@@ -41,25 +43,27 @@ img{
     min-height: 0; /* чтобы overflow работал */
 }
 
-.workspace__code-editor{
+.workspace__code-editor {
     flex: 7.5 0 0;
     position: relative;
     overflow: hidden;
 }
-.workspace__block-palette{
+
+.workspace__block-palette {
     overflow-y: auto;
     overflow-x: hidden;
 }
-.workspace__consol{
+
+.workspace__console {
     flex-grow: 5.5
 } 
-.container{
+.container {
     border: 2px solid black;
     
     /* margin-top: 7vh; */
 }
 
-.block{
+.block {
     background-color: rgba(21, 75, 221, 0.744);
     height: 6vh;
     width: fit-content;
@@ -69,16 +73,17 @@ img{
     padding: 0.1em 0.1em; 
     user-select: none;
 }
-.workspace__operation{
+
+.workspace__operation {
     pointer-events: none;
 }
 
 /* категории в левой правой панели */
-.workspace__category-1{
+.workspace__category-1 {
     margin: 20px 0px 0px 10px;
 }
 
-.category{
+.category {
     font-size: 2em;
     font-weight: bold;
     opacity:0.7;
@@ -94,6 +99,7 @@ editor > .block { /* Класс который присваиваем клону
     cursor: grab;
     user-select: none;
 }
+
 /* категории в самой левой панели */
 .workspace__categories {
     flex-grow: 0.3;
@@ -105,6 +111,7 @@ editor > .block { /* Класс который присваиваем клону
     padding: 10px 0;
     gap: 15px; /* расстояние между категориями */
 }
+
 .workspace__tabs a {
     display: flex;
     flex-direction: column; /* кружок сверху, текст снизу */
@@ -115,6 +122,10 @@ editor > .block { /* Класс который присваиваем клону
     background-color: #00000022;
     border-radius: 1em;
     padding: 0.2em;
+}
+
+.workspace__toolbar {
+    width: 2em;
 }
 
 .workspace__tabs .icon {
@@ -130,34 +141,43 @@ editor > .block { /* Класс который присваиваем клону
     text-align: center;
     user-select: none;
 }
-.workspace__tabs{
+
+.workspace__tabs {
     display: flex;
     flex-direction: column;
     gap:10px;
 }
 
-.tab{
+.tab {
     text-align: center;
 }
+
 .workspace__icon-literals { background-color: #8a2be2; }
+
 .workspace__icon-arrays { background-color: #32cd32; }
+
 .workspace__icon-control { background-color: #ff4500; }
+
 .workspace__icon-math { background-color: #1e90ff; }
+
 .workspace__icon-logic { background-color: #ff1493; }
+
 .workspace__icon-math-advanced { background-color: #00bfff; }
+
 .workspace__icon-strings { background-color: #ff69b4; }
+
 .workspace__icon-conversions { background-color: #ffa500; }
 
 .with-branch {
     display: flex;
     align-items: center;
     gap: 20px;
-
     padding: 10px;
     width: fit-content;
     height: fit-content;
 }
-.workspace__branch{
+
+.workspace__branch {
     min-width: 35px;
     min-height: 25px;
     background-color: white;
@@ -174,6 +194,6 @@ editor > .block { /* Класс который присваиваем клону
     outline: 2px dashed orange;
 }
 
-.workspace__input-number{
+.workspace__input-number {
     width: 3em; 
 }

@@ -1,3 +1,4 @@
+import { Interpreter } from "./index.mjs";
 import { UINodeManager } from "./UINodeManager.mjs";
 const manager = new UINodeManager();
 
@@ -74,6 +75,7 @@ editor.addEventListener('pointerdown', (e) => {
     const uiNode = manager.getNode(blockElement.id);
     manager.detach(uiNode);
     startDragging(uiNode, e, blockElement);
+    console.log(manager);
 });
 
 document.addEventListener('pointermove', (e) => {
@@ -87,7 +89,7 @@ document.addEventListener('pointerup', (e) => {
 
     const branchElement = getBranchUnderCursor(e.clientX, e.clientY);
 
-    const editorRect = editor.getBoundingClientRect(); // координаты editor
+    const editorRect = editor.getBoundingClientRect();
     const isInsideEditor =
         e.clientX >= editorRect.left &&
         e.clientX <= editorRect.right &&
@@ -118,14 +120,6 @@ document.addEventListener('pointerup', (e) => {
     draggingBlock = null;
 });
 
-/* 
-palette — шаблоны
-editor — рабочая зона
-
-дальше делаем прилипание блоков через Snap
-Snap - это проверка расстояния между блоками
-*/
-
 function getBranchUnderCursor(x,y) {
     const branches = document.querySelectorAll(".workspace__branch");
     
@@ -140,3 +134,13 @@ function getBranchUnderCursor(x,y) {
     })
     return maxLayerBranch ? maxLayerBranch.at(-1) : null;
 }
+
+const playButton = document.querySelector(".workspace__run")
+playButton.addEventListener("click", e => {
+    const roots = [...manager.activeBlocks.values()]
+        .filter(elem => !elem.element.parentElement.closest(".block"))
+    for (const root of roots) {
+        const interp = new Interpreter(root.node);
+        console.log(interp.run())
+    }
+})

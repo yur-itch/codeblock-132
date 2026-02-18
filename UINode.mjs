@@ -17,7 +17,7 @@ class UINode {
         const index = this.branches.indexOf(branch);
         console.log(`Node added to branch with index: ${index}`);
         branch.appendChild(childUINode.element);
-        this.node.children[index] = new ASTNode(childUINode.node);
+        this.node.children[index] = childUINode.node;
     }
 
     removeChild(childUINOde) {
