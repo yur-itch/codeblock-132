@@ -15,9 +15,9 @@ class UINode {
 
     appendChild(childUINode, branch) {
         const index = this.branches.indexOf(branch);
-        console.log(index);
+        console.log(`Node added to branch with index: ${index}`);
         branch.appendChild(childUINode.element);
-        this.node.children.push(childUINode.node);
+        this.node.children[index] = new ASTNode(childUINode.node);
     }
 
     removeChild(childUINOde) {
@@ -28,12 +28,11 @@ class UINode {
     }
 
     attachTo(parent) {
-        this.element.style.position = 'static';
+        this.element.style.position = "static";
         this.parent = parent;
     }
 
     detach() {
-        this.element.style.position = 'absolute';
         if (this.parent) {
             this.parent.removeChild(this);
         }

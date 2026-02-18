@@ -1,6 +1,4 @@
 import { UINodeManager } from "./UINodeManager.mjs";
-// делаем клон наших блоков
-// const clone = block.cloneNode(true);
 const manager = new UINodeManager();
 
 // clone.classList.add("code-block");
@@ -11,39 +9,43 @@ const editor = document.querySelector(".workspace__code-editor");
 
 let draggingBlock = null; // какой блок сейчас тащим
 let currentBranch = null; // состояние текущей ветки; Это память о прошлой ветке, над которой был курсор.
-// где внутри блока был клик
 let offsetX = 0;
 let offsetY = 0;
-// pointerdown - сообщает, что произошло нажатие
-// e — объект события (координаты мыши, target, тип события и т.д.)
-// e.target - элемент, по которому нажали
+
 const numberBlock = palette.querySelector(".workspace__numberLiteral-block")
 const stringBlock = palette.querySelector(".workspace__stringLiteral-block")
 const variableBlock = palette.querySelector(".workspace__variable-block")
 const assignBlock = palette.querySelector(".workspace__assign-block")
+const plusBlock = palette.querySelector(".workspace__plus-block")
+
 
 numberBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("numberLiteral", "Число")
-    startDragging(uiNode, e);
+    startDragging(uiNode, e, e.target);
 });
 stringBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("stringLiteral", "Строка")
-    startDragging(uiNode, e);
+    startDragging(uiNode, e, e.target);
 });
 variableBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("variable", "Переменная")
-    startDragging(uiNode, e);
+    startDragging(uiNode, e, e.target);
 });
 assignBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("assign", "=")
-    startDragging(uiNode, e);
+    startDragging(uiNode, e, e.target);
+});
+plusBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("call", "+")
+    startDragging(uiNode, e, e.target);
 });
 
-function startDragging(uiNode, e) {
-    editor.parentElement.append(uiNode.element);
+function startDragging(uiNode, e, blockElement) {
+    console.log(uiNode);
+    e.stopPropagation(); /* чтобы клик не дошёл до palette document иначе могут начаться глюки */
     draggingBlock = uiNode;
-    const block = e.target.closest(".block")
-    const rect = block.getBoundingClientRect();
+    const rect = blockElement.getBoundingClientRect();
+    editor.parentElement.append(uiNode.element);
     offsetX = e.clientX - rect.left;
     offsetY = e.clientY - rect.top;
     uiNode.element.style.position = "absolute";
@@ -51,77 +53,41 @@ function startDragging(uiNode, e) {
     uiNode.element.style.left = (e.clientX - offsetX) + 'px';
 }
 
-editor.addEventListener('pointerdown', (e) => { 
-    /* если кликнули: по блоку → вернёт блок по ветке / пустоте → null */ 
-    const block = e.target.closest(".block");
+function dragging(uiNode, e) {
+    uiNode.element.style.left = (e.clientX - offsetX) + 'px';
+    uiNode.element.style.top  = (e.clientY - offsetY) + 'px';
+    const branch = getBranchUnderCursor(e.clientX, e.clientY);
+    if(branch !== currentBranch) {
+        if(currentBranch) {
+            currentBranch.classList.remove('highlight');
+        }
+        if(branch) {
+            branch.classList.add('highlight');
+        }
+        currentBranch = branch;
+    }
+}
 
-    if (!block) return;
-    /* чтобы клик не дошёл до palette 
-    document иначе могут начаться глюки */
-    e.stopPropagation();
-
-    const rect = block.getBoundingClientRect();
-
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-
-    editor.parentElement.appendChild(block);
-
-    draggingBlock = manager.getNode(block.id);
-    manager.detach(draggingBlock);
-
-    block.style.left = (e.clientX - offsetX) + 'px';
-    block.style.top  = (e.clientY - offsetY) + 'px';
-
+editor.addEventListener('pointerdown', (e) => {
+    const blockElement = e.target.closest(".block");
+    if (!blockElement) return;
+    const uiNode = manager.getNode(blockElement.id);
+    manager.detach(uiNode);
+    startDragging(uiNode, e, blockElement);
 });
 
 document.addEventListener('pointermove', (e) => {
     if (!draggingBlock) return;
 
-    // просто обновляем его позицию при движении мыши
-    draggingBlock.element.style.left = (e.clientX - offsetX) + 'px';
-    draggingBlock.element.style.top  = (e.clientY - offsetY) + 'px';
-
-    //кладем блоки в ветку
-    const branch = getBranchUnderCursor(e.clientX, e.clientY); 
-    /* e.clientX, e.clientY — позиция курсора в окне
-getBranchUnderCursor(x, y):
-перебирает все .workspace__branch
-проверяет: попал ли курсор внутрь прямоугольника ветки
-если да → возвращает DOM-элемент ветки
-если нет → null*/
-
-    if(branch !== currentBranch){ // проверяем изменилась ли на самом деле ветка
-        if(currentBranch){ // проверка на null
-            currentBranch.classList.remove('highlight');
-            //удаляем у старой ветки класс
-        }
-        /*Если курсор сейчас над веткой:
-добавляем ей визуальный класс
-Если branch === null:
-ничего не делаем (курсор в пустоте) */
-        if(branch){
-            branch.classList.add('highlight');
-        }
-        currentBranch = branch;
-        /* запомнили, над какой веткой курсор
-следующий pointermove будет сравнbваться с ней */
-    }
-    /* Ты делаешь это КАЖДЫЙ кадр:
-Узнать, над какой веткой курсор
-Если ветка изменилась:
-убрать подсветку старой
-подсветить новую
-Запомнить новую ветку */
+    dragging(draggingBlock, e);
 });
 
 document.addEventListener('pointerup', (e) => {
     if (!draggingBlock) return;
 
     const branchElement = getBranchUnderCursor(e.clientX, e.clientY);
-    
+
     const editorRect = editor.getBoundingClientRect(); // координаты editor
-    // проверка на то, находится ли блок в зоне editor
     const isInsideEditor =
         e.clientX >= editorRect.left &&
         e.clientX <= editorRect.right &&
@@ -130,45 +96,35 @@ document.addEventListener('pointerup', (e) => {
     
     if (!isInsideEditor) {
         manager.removeNode(draggingBlock)
-    } else if (branchElement){
+    } else if (branchElement && branchElement.parentElement !== draggingBlock.element) {
         const nodeBranchParent = manager.getNode(branchElement.parentElement.id);
         manager.attach(draggingBlock, nodeBranchParent, branchElement)
-    } else{
+    } else {
         // пересчитываем координаты под editor
         const x = e.clientX - editorRect.left - offsetX;
         const y = e.clientY - editorRect.top  - offsetY;
 
-        // СНАЧАЛА мы кладём блок в editor
         editor.appendChild(draggingBlock.element);
-        
-        // ПОТОМ задаём left/top, потому что система координат меняется
-        // (раньше система координат нашего блока зависела от body, щас от editor)
+
         draggingBlock.element.style.left = x + 'px';
         draggingBlock.element.style.top  = y + 'px';
     }
 
     if (currentBranch) { 
         currentBranch.classList.remove('highlight'); 
-        currentBranch = null; 
     }
 
-    draggingBlock = null; // блок больше не двигаем
+    currentBranch = null; 
+    draggingBlock = null;
 });
 
-/* palette — шаблоны
-
+/* 
+palette — шаблоны
 editor — рабочая зона
 
-cloneNode создаёт независимый блок для editor
-
-pointerdown / move / up делают drag
-
-offsetX/Y обеспечивают правильное позиционирование при перетаскивании*/
-
-// Дальше делаем прилипание блоков через Snap
-// Snap - это проверка расстояния между блоками
-
-// кладем блоки в ветку:
+дальше делаем прилипание блоков через Snap
+Snap - это проверка расстояния между блоками
+*/
 
 function getBranchUnderCursor(x,y) {
     const branches = document.querySelectorAll(".workspace__branch");

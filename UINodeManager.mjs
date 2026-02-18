@@ -9,12 +9,9 @@ class UINodeManager {
         const value = null;
         const element = document.createElement("div");
         const uiNode = new UINode(type, element);
-        
-        element.classList.add(`workspace__${type}-block`);
-        element.classList.add('block');
-        element.classList.add('with-branch');
+        element.className = `workspace__${type}-block block with-branch`
         element.id = uiNode.node.id;
-        element.style.position = 'absolute';
+        element.style.position = 'absolute'; 
         const text = document.createElement("div");
         text.innerHTML = label;
         text.classList.add('workspace__operation');
@@ -54,6 +51,19 @@ class UINodeManager {
                 break;
             }
             case "assign": {
+                const left = document.createElement("div");
+                left.classList.add("workspace__branch");
+    
+                const right = document.createElement("div");
+                right.classList.add("workspace__branch");
+
+                element.appendChild(left);
+                element.appendChild(text);
+                element.appendChild(right);
+                uiNode.setBranches([left, right]);
+                break;
+            }
+            case "call": {
                 const left = document.createElement("div");
                 left.classList.add("workspace__branch");
     
