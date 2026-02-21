@@ -264,7 +264,7 @@ class Interpreter {
                 }
                 
                 if (args.length !== fn.params.length)
-                    throw new Error(`Function expects ${fn.params.length} arguments`);
+                    throw new Error(`Function expects ${fn.params.length} arguments, got ${args.length}`);
                 for (let i = 0; i < args.length; i++) {
                     if (args[i].type !== fn.params[i] && fn.params[i] !== "any")
                         throw new Error(`Argument ${i} should be ${fn.params[i]}, got ${args[i].type}`);

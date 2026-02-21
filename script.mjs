@@ -18,10 +18,12 @@ let offsetY = 0;
 
 const numberBlock = palette.querySelector(".workspace__numberLiteral-block")
 const stringBlock = palette.querySelector(".workspace__stringLiteral-block")
+const boolBlock = palette.querySelector(".workspace__boolLiteral-block")
 const variableBlock = palette.querySelector(".workspace__variable-block")
 const assignBlock = palette.querySelector(".workspace__assign-block")
 const plusBlock = palette.querySelector(".workspace__plus-block")
-
+const greaterBlock = palette.querySelector(".workspace__gt-block")
+const andBlock = palette.querySelector(".workspace__and-block")
 
 numberBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("numberLiteral", "Число")
@@ -29,6 +31,10 @@ numberBlock.addEventListener('pointerdown', (e) => {
 });
 stringBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("stringLiteral", "Строка")
+    startDragging(uiNode, e, e.target);
+});
+boolBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("boolLiteral", "Булево")
     startDragging(uiNode, e, e.target);
 });
 variableBlock.addEventListener('pointerdown', (e) => {
@@ -41,6 +47,14 @@ assignBlock.addEventListener('pointerdown', (e) => {
 });
 plusBlock.addEventListener('pointerdown', (e) => {
     const uiNode = manager.spawnNode("call", "+").setOperation(new ASTNode("variable", "+"));
+    startDragging(uiNode, e, e.target);
+});
+greaterBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("call", ">").setOperation(new ASTNode("variable", ">"));
+    startDragging(uiNode, e, e.target);
+});
+andBlock.addEventListener('pointerdown', (e) => {
+    const uiNode = manager.spawnNode("call", "and").setOperation(new ASTNode("variable", "and"));
     startDragging(uiNode, e, e.target);
 });
 

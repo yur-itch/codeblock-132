@@ -24,7 +24,6 @@ class UINodeManager {
                 element.appendChild(input);
                 input.addEventListener("change", (e) => {
                     uiNode.node.value = Number.parseFloat(e.target.value);
-                    console.log(uiNode.node);
                 })
                 break;
             }
@@ -37,6 +36,18 @@ class UINodeManager {
                 input.value = value;
                 break;
             }
+            case "boolLiteral": {
+                element.appendChild(text);
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.className = "workspace__input-number"
+                element.appendChild(input);
+                input.value = value;
+                input.addEventListener("change", (e) => {
+                    uiNode.node.value = input.checked;
+                })
+                break;
+            }
             case "variable": {
                 element.appendChild(text);
                 const input = document.createElement("input");
@@ -46,7 +57,6 @@ class UINodeManager {
                 input.value = value;
                 input.addEventListener("change", (e) => {
                     uiNode.node.value = e.target.value;
-                    console.log(uiNode.node);
                 })
                 break;
             }

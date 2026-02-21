@@ -39,7 +39,8 @@ class UINode {
     removeChild(childUINOde) {
         const index = this.node.children.indexOf(childUINOde.node);
         if (index !== -1) {
-            this.node.children.splice(index, 1);
+            this.node.children[index] = undefined;
+            // this.node.children.splice(index, 1);
         }
     }
 
