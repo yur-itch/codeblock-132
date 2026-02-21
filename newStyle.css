@@ -55,7 +55,7 @@ img {
 }
 
 .workspace__console {
-    flex-grow: 5.5
+    flex-grow: 2
 } 
 .container {
     border: 2px solid black;

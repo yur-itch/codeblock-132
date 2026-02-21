@@ -13,11 +13,27 @@ class UINode {
         this.branches = branches;
     }
 
+    setOperation(variable)
+    {
+        this.node.children[0] = variable;
+        return this;
+    }
+
+    canAppendChild(childUINode, branch) {
+        const index = this.branches.indexOf(branch);
+        switch (this.node.token) {
+            case "assign": {
+                return ((index === 0) && !(this.node.children[0])) || ((index === 1) && !(this.node.children[0]))
+            }
+        }
+    }
+
     appendChild(childUINode, branch) {
+        const offset = this.node.token == "call" ? 1 : 0;
         const index = this.branches.indexOf(branch);
         console.log(`Node added to branch with index: ${index}`);
         branch.appendChild(childUINode.element);
-        this.node.children[index] = childUINode.node;
+        this.node.children[index + offset] = childUINode.node;
     }
 
     removeChild(childUINOde) {

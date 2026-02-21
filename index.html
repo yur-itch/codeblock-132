@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="newStyle.css">
     <link rel="stylesheet" href="/reset.css">
     <script src = "script.mjs" type = "module" defer></script>
+    <script src = "console.mjs" type = "module" defer></script>
     <title>Document</title>
 </head>
 <body>
@@ -244,7 +245,10 @@
         </section>
 
         <section class="workspace__code-editor container"> </section>
-        <section class = "workspace__console container"></section>
+        <section class = "workspace__console container">
+            <div class = "workspace__output"></div>
+            <input class = "workspace__input" type="text">
+        </section>
         <section class="workspace__toolbar container">
             <button class="workspace__run">▶️</button>
         </section>

@@ -1,5 +1,6 @@
-import { Interpreter } from "./index.mjs";
+import { ASTNode, Interpreter } from "./index.mjs";
 import { UINodeManager } from "./UINodeManager.mjs";
+import { Console } from "./console.mjs";
 const manager = new UINodeManager();
 
 // clone.classList.add("code-block");
@@ -7,7 +8,9 @@ const manager = new UINodeManager();
 
 const palette = document.querySelector(".workspace__block-palette");
 const editor = document.querySelector(".workspace__code-editor");
+const editorConsole = new Console();
 
+editorConsole.print("HELLO,WORLD!")
 let draggingBlock = null; // какой блок сейчас тащим
 let currentBranch = null; // состояние текущей ветки; Это память о прошлой ветке, над которой был курсор.
 let offsetX = 0;
@@ -37,7 +40,7 @@ assignBlock.addEventListener('pointerdown', (e) => {
     startDragging(uiNode, e, e.target);
 });
 plusBlock.addEventListener('pointerdown', (e) => {
-    const uiNode = manager.spawnNode("call", "+")
+    const uiNode = manager.spawnNode("call", "+").setOperation(new ASTNode("variable", "+"));
     startDragging(uiNode, e, e.target);
 });
 
@@ -70,6 +73,7 @@ function dragging(uiNode, e) {
 }
 
 editor.addEventListener('pointerdown', (e) => {
+    if (e.target.classList.contains("workspace__input-number")) return;
     const blockElement = e.target.closest(".block");
     if (!blockElement) return;
     const uiNode = manager.getNode(blockElement.id);
@@ -141,6 +145,8 @@ playButton.addEventListener("click", e => {
         .filter(elem => !elem.element.parentElement.closest(".block"))
     for (const root of roots) {
         const interp = new Interpreter(root.node);
-        console.log(interp.run())
+        const result = interp.run();
+        console.log(result);
+        editorConsole.print(`${result.type} ${result.value}`);
     }
 })

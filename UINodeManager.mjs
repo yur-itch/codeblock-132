@@ -64,6 +64,8 @@ class UINodeManager {
                 break;
             }
             case "call": {
+                uiNode.node.children.push()
+
                 const left = document.createElement("div");
                 left.classList.add("workspace__branch");
     
